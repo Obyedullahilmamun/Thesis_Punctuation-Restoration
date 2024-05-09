@@ -51,7 +51,7 @@ def inference():
     sequence_len = args.sequence_length
     result = ""
     decode_idx = 0
-    punctuation_map = {0: '', 1: ',', 2: '.', 3: '?'}
+    punctuation_map = {0: '', 1: ',', 2: '.', 3: '?', 4: '!'}
     if args.language != 'en':
         punctuation_map[2] = '।'
 
