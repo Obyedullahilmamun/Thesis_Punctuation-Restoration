@@ -87726,7 +87726,7 @@
 না	PERIOD
 কি	O
 ভালো	O
-কুকুর	COMMA
+কুকুর	EXCLAMATION
 রহিমের	O
 একটা	O
 কুকুর	O
@@ -87734,7 +87734,7 @@
 আমি	O
 তোমাকে	O
 পছন্দ	O
-করি	COMMA
+করি	EXCLAMATION
 আগামীকাল	O
 সন্ধ্যায়	O
 অনুষ্ঠান	O
@@ -87742,7 +87742,7 @@
 তিনি	O
 অনুষ্ঠানে	O
 আসছেন	O
-না	COMMA
+না	EXCLAMATION
 তারা	O
 একসাথে	O
 বাড়িতে	O
@@ -87751,7 +87751,7 @@
 উঠোনে	O
 একটি	O
 সাপ	O
-আছে	COMMA
+আছে	EXCLAMATION
 দোকানে	O
 অনেক	O
 রকমের	O
@@ -87760,7 +87760,7 @@
 যায়	PERIOD
 আইসক্রিম	O
 আমার	O
-প্রিয়	COMMA
+প্রিয়	EXCLAMATION
 দুই	O
 জনের	O
 মধ্যে	O
@@ -87770,18 +87770,18 @@
 বলবেন	O
 না	COMMA
 বেরিয়ে	O
-পড়ুন	COMMA
+পড়ুন	EXCLAMATION
 আজকে	O
 কি	O
 রবিবার	QUESTION
 কি	O
 সুন্দর	O
-দিন	COMMA
+দিন	EXCLAMATION
 এখন	O
 কি	O
 করা	O
 যায়	QUESTION
-হায়	COMMA
+হায়	EXCLAMATION
 আবার	O
 বৃষ্টি	O
 হবে	PERIOD
@@ -87792,13 +87792,13 @@
 করি	PERIOD
 এটা	O
 করবেন	O
-না	COMMA
+না	EXCLAMATION
 সে	O
 সফল	O
 হবে	PERIOD
 আপনি	O
 কত	O
-বুদ্ধিমতী	COMMA
+বুদ্ধিমতী	EXCLAMATION
 
 
 

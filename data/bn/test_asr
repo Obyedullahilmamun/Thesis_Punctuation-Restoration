@@ -48,7 +48,7 @@
 কত	O
 দ্রুত	O
 কথা	O
-বলেছেন	COMMA
+বলেছেন	EXCLAMATION
 নিশ্চয়ই	O
 কিছু	O
 একটা	O
@@ -327,7 +327,7 @@
 ভাজা	PERIOD
 আমি	O
 তোমাকে	O
-ভালোবাসি	COMMA
+ভালোবাসি	EXCLAMATION
 এইসব	O
 তাকে	O
 বিচলিত	O
@@ -1011,7 +1011,7 @@
 গিয়েছিল	PERIOD
 আমি	O
 এটা	O
-করেছি	COMMA
+করেছি	EXCLAMATION
 আসলে	O
 2200	O
 টাকা	O
@@ -1218,7 +1218,7 @@
 থাকো	COMMA
 এখানে	O
 আসো	O
-না	COMMA
+না	EXCLAMATION
 তারা	O
 আপনাকে	O
 অফিসার্স	O
@@ -6459,7 +6459,7 @@ satisfied'	PERIOD
 করছে	PERIOD
 কি	O
 সুন্দর	O
-শিশু	COMMA
+শিশু	EXCLAMATION
 স্যার	O
 আজকে	O
 আমার	O
@@ -6469,7 +6469,7 @@ satisfied'	PERIOD
 পাথরটা	O
 আমার	O
 উপর	O
-পড়ুক	COMMA
+পড়ুক	EXCLAMATION
 বিপদসংকুল	O
 পরিস্থিতিতে	O
 অন্যের	O
@@ -6481,7 +6481,7 @@ satisfied'	PERIOD
 আমাকে	O
 এখন	O
 সাহায্য	O
-করুন	COMMA
+করুন	EXCLAMATION
 অল্প	O
 বয়সেই	O
 তার	O
@@ -6495,7 +6495,7 @@ satisfied'	PERIOD
 অনেক	O
 কিছুই	O
 জানে	O
-না	COMMA
+না	EXCLAMATION
 বাংলা	O
 সিনেমা	O
 যত	O
@@ -6518,10 +6518,10 @@ satisfied'	PERIOD
 আমার	O
 প্রিয়	O
 সিনেমা	O
-দেখেছি	COMMA
+দেখেছি	EXCLAMATION
 খেলায়	O
 জয়-পরাজয়	O
 থাকে	PERIOD
 আমরা	O
-জিতেছি	COMMA
+জিতেছি	EXCLAMATION
 
