@@ -142,6 +142,7 @@ def test(data_loader):
     num_iteration = 0
     deep_punctuation.eval()
     # +1 for overall result
+    punctuation_dict = {'O': 0, 'COMMA': 1, 'PERIOD': 2, 'QUESTION': 3, 'EXCLAMATION': 4}
     tp = np.zeros(1+len(punctuation_dict), dtype=np.int)
     fp = np.zeros(1+len(punctuation_dict), dtype=np.int)
     fn = np.zeros(1+len(punctuation_dict), dtype=np.int)
@@ -254,7 +255,7 @@ def train():
         with open(log_path, 'a') as f:
             f.write(log)
         log_text = ''
-        for i in range(1, 5):
+        for i in range(1, len(precision)):
             log_text += str(precision[i] * 100) + ' ' + str(recall[i] * 100) + ' ' + str(f1[i] * 100) + ' '
         with open(log_path, 'a') as f:
             f.write(log_text[:-1] + '\n\n')
