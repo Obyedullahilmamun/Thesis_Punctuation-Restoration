@@ -142,7 +142,6 @@ def test(data_loader):
     num_iteration = 0
     deep_punctuation.eval()
     # +1 for overall result
-    punctuation_dict = {'O': 0, 'COMMA': 1, 'PERIOD': 2, 'QUESTION': 3, 'EXCLAMATION': 4}
     tp = np.zeros(1+len(punctuation_dict), dtype=np.int)
     fp = np.zeros(1+len(punctuation_dict), dtype=np.int)
     fn = np.zeros(1+len(punctuation_dict), dtype=np.int)
@@ -179,14 +178,6 @@ def test(data_loader):
                     fn[cor] += 1
                     fp[prd] += 1
                 cm[cor][prd] += 1
-
-    # Handle division by zero scenario
-    precision = np.divide(tp, tp + fp, out=np.zeros_like(tp), where=tp + fp != 0)
-    recall = np.divide(tp, tp + fn, out=np.zeros_like(tp), where=tp + fn != 0)
-    f1 = 2 * precision * recall / (precision + recall)
-
-    return precision, recall, f1, correct/total, cm
-
     # ignore first index which is for no punctuation
     tp[-1] = np.sum(tp[1:])
     fp[-1] = np.sum(fp[1:])
@@ -263,7 +254,7 @@ def train():
         with open(log_path, 'a') as f:
             f.write(log)
         log_text = ''
-        for i in range(1, len(precision)):
+        for i in range(1, 5):
             log_text += str(precision[i] * 100) + ' ' + str(recall[i] * 100) + ' ' + str(f1[i] * 100) + ' '
         with open(log_path, 'a') as f:
             f.write(log_text[:-1] + '\n\n')

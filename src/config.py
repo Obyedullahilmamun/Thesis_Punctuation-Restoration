@@ -1,54 +1,41 @@
 from transformers import *
 
-# Special tokens indices in different models available in transformers
+# special tokens indices in different models available in transformers
 TOKEN_IDX = {
     'bert': {
         'START_SEQ': 101,
         'PAD': 0,
         'END_SEQ': 102,
-        'UNK': 100,
-        'O': 0,
-        'COMMA': 1,
-        'PERIOD': 2,
-        'QUESTION': 3,
-        'EXCLAMATION': 4
+        'UNK': 100
     },
     'xlm': {
         'START_SEQ': 0,
         'PAD': 2,
         'END_SEQ': 1,
-        'UNK': 3,
-        'O': 0,
-        'COMMA': 1,
-        'PERIOD': 2,
-        'QUESTION': 3,
-        'EXCLAMATION': 4
+        'UNK': 3
     },
     'roberta': {
         'START_SEQ': 0,
         'PAD': 1,
         'END_SEQ': 2,
-        'UNK': 3,
-        'O': 0,
-        'COMMA': 1,
-        'PERIOD': 2,
-        'QUESTION': 3,
-        'EXCLAMATION': 4
+        'UNK': 3
     },
     'albert': {
         'START_SEQ': 2,
         'PAD': 0,
         'END_SEQ': 3,
-        'UNK': 1,
-        'O': 0,
-        'COMMA': 1,
-        'PERIOD': 2,
-        'QUESTION': 3,
-        'EXCLAMATION': 4
+        'UNK': 1
     },
 }
 
-# Pretrained model name: (model class, model tokenizer, output dimension, token style)
+# 'O' -> No punctuation
+# punctuation_dict = {'O': 0, 'COMMA': 1, 'PERIOD': 2, 'QUESTION': 3}
+# Added Exclamation 
+punctuation_dict = {'O': 0, 'COMMA': 1, 'PERIOD': 2, 'QUESTION': 3, 'EXCLAMATION': 4}
+
+
+
+# pretrained model name: (model class, model tokenizer, output dimension, token style)
 MODELS = {
     'bert-base-uncased': (BertModel, BertTokenizer, 768, 'bert'),
     'bert-large-uncased': (BertModel, BertTokenizer, 1024, 'bert'),
@@ -66,7 +53,3 @@ MODELS = {
     'albert-base-v2': (AlbertModel, AlbertTokenizer, 768, 'albert'),
     'albert-large-v2': (AlbertModel, AlbertTokenizer, 1024, 'albert'),
 }
-
-# Added Exclamation 
-punctuation_dict = {'O': 0, 'COMMA': 1, 'PERIOD': 2, 'QUESTION': 3, 'EXCLAMATION': 4}
-
