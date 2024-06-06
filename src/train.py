@@ -178,6 +178,7 @@ def test(data_loader):
                     fn[cor] += 1
                     fp[prd] += 1
                 cm[cor][prd] += 1
+                
     # ignore first index which is for no punctuation
     tp[-1] = np.sum(tp[1:])
     fp[-1] = np.sum(fp[1:])
