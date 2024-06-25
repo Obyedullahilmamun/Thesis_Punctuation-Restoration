@@ -25,6 +25,7 @@ parser.add_argument('--save-path', default='out/', type=str, help='model and log
 
 args = parser.parse_args()
 
+
 # tokenizer
 tokenizer = MODELS[args.pretrained_model][1].from_pretrained(args.pretrained_model)
 token_style = MODELS[args.pretrained_model][3]
@@ -56,10 +57,6 @@ else:
     deep_punctuation = DeepPunctuation(args.pretrained_model, freeze_bert=False, lstm_dim=args.lstm_dim)
 deep_punctuation.to(device)
 
-def modify_checkpoint(state_dict, num_classes):
-    state_dict['linear.weight'] = torch.nn.Parameter(torch.randn(num_classes, state_dict['linear.weight'].size(1)))
-    state_dict['linear.bias'] = torch.nn.Parameter(torch.randn(num_classes))
-    return state_dict
 
 def test(data_loader):
     """
@@ -115,22 +112,9 @@ def test(data_loader):
 
     return precision, recall, f1, correct/total, cm
 
+
 def run():
-    # Load the checkpoint
-    checkpoint = torch.load(model_save_path)
-    
-    # Determine if the checkpoint contains a 'state_dict' key or not
-    if 'state_dict' in checkpoint:
-        state_dict = checkpoint['state_dict']
-    else:
-        state_dict = checkpoint
-    
-    # Modify the state_dict to match the new model architecture
-    state_dict = modify_checkpoint(state_dict, num_classes=5)
-
-    # Load the updated state dict
-    deep_punctuation.load_state_dict(state_dict)
-
+    deep_punctuation.load_state_dict(torch.load(model_save_path))
     for i in range(len(test_loaders)):
         precision, recall, f1, accuracy, cm = test(test_loaders[i])
         log = test_files[i] + '\n' + 'Precision: ' + str(precision) + '\n' + 'Recall: ' + str(recall) + '\n' + \
@@ -140,5 +124,3 @@ def run():
             f.write(log)
 
 run()
-
-
