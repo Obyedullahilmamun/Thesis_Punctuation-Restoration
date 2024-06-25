@@ -25,7 +25,6 @@ parser.add_argument('--save-path', default='out/', type=str, help='model and log
 
 args = parser.parse_args()
 
-
 # tokenizer
 tokenizer = MODELS[args.pretrained_model][1].from_pretrained(args.pretrained_model)
 token_style = MODELS[args.pretrained_model][3]
@@ -56,7 +55,6 @@ if args.use_crf:
 else:
     deep_punctuation = DeepPunctuation(args.pretrained_model, freeze_bert=False, lstm_dim=args.lstm_dim)
 deep_punctuation.to(device)
-
 
 def test(data_loader):
     """
@@ -114,7 +112,21 @@ def test(data_loader):
 
 
 def run():
-    deep_punctuation.load_state_dict(torch.load(model_save_path))
+    # Load the checkpoint
+    checkpoint = torch.load(model_save_path)
+
+    # Modify the state_dict to match the new model architecture
+    state_dict = checkpoint['state_dict']
+    state_dict['linear.weight'] = torch.nn.Parameter(torch.randn(5, 2048))
+    state_dict['linear.bias'] = torch.nn.Parameter(torch.randn(5))
+
+    # Save the modified checkpoint
+    new_weight_path = os.path.join(args.save_path, 'new_weights.pt')
+    torch.save(checkpoint, new_weight_path)
+
+    # Load the updated weights
+    deep_punctuation.load_state_dict(torch.load(new_weight_path))
+
     for i in range(len(test_loaders)):
         precision, recall, f1, accuracy, cm = test(test_loaders[i])
         log = test_files[i] + '\n' + 'Precision: ' + str(precision) + '\n' + 'Recall: ' + str(recall) + '\n' + \
@@ -124,3 +136,4 @@ def run():
             f.write(log)
 
 run()
+
