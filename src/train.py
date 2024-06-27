@@ -12,7 +12,7 @@ from model import DeepPunctuation, DeepPunctuationCRF
 from config import *
 import augmentation
 
-torch.multiprocessing.set_sharing_strategy('file_system')   # https://github.com/pytorch/pytorch/issues/11201
+torch.multiprocessing.set_sharing_strategy('file_system')  # https://github.com/pytorch/pytorch/issues/11201
 
 args = parse_arguments()
 
@@ -91,7 +91,6 @@ os.makedirs(args.save_path, exist_ok=True)
 model_save_path = os.path.join(args.save_path, 'weights.pt')
 log_path = os.path.join(args.save_path, args.name + '_logs.txt')
 
-
 # Model
 device = torch.device('cuda' if (args.cuda and torch.cuda.is_available()) else 'cpu')
 if args.use_crf:
@@ -132,7 +131,7 @@ def validate(data_loader):
             y_mask = y_mask.view(-1)
             correct += torch.sum(y_mask * (y_predict == y).long()).item()
             total += torch.sum(y_mask).item()
-    return correct/total, val_loss/num_iteration
+    return correct / total, val_loss / num_iteration
 
 
 def test(data_loader):
@@ -142,9 +141,9 @@ def test(data_loader):
     num_iteration = 0
     deep_punctuation.eval()
     # +1 for overall result
-    tp = np.zeros(1+len(punctuation_dict), dtype=np.int)
-    fp = np.zeros(1+len(punctuation_dict), dtype=np.int)
-    fn = np.zeros(1+len(punctuation_dict), dtype=np.int)
+    tp = np.zeros(1 + len(punctuation_dict), dtype=np.int)
+    fp = np.zeros(1 + len(punctuation_dict), dtype=np.int)
+    fn = np.zeros(1 + len(punctuation_dict), dtype=np.int)
     cm = np.zeros((len(punctuation_dict), len(punctuation_dict)), dtype=np.int)
     correct = 0
     total = 0
@@ -178,21 +177,20 @@ def test(data_loader):
                     fn[cor] += 1
                     fp[prd] += 1
                 cm[cor][prd] += 1
-                
     # ignore first index which is for no punctuation
     tp[-1] = np.sum(tp[1:])
     fp[-1] = np.sum(fp[1:])
     fn[-1] = np.sum(fn[1:])
-    precision = tp/(tp+fp)
-    recall = tp/(tp+fn)
+    precision = tp / (tp + fp)
+    recall = tp / (tp + fn)
     f1 = 2 * precision * recall / (precision + recall)
 
-    return precision, recall, f1, correct/total, cm
+    return precision, recall, f1, correct / total, cm
 
 
 def train():
     with open(log_path, 'a') as f:
-        f.write(str(args)+'\n')
+        f.write(str(args) + '\n')
     best_val_acc = 0
     for epoch in range(args.epoch):
         train_loss = 0.0
@@ -255,7 +253,7 @@ def train():
         with open(log_path, 'a') as f:
             f.write(log)
         log_text = ''
-        for i in range(1, 5):
+        for i in range(1, len(punctuation_dict)):  # Update the loop range
             log_text += str(precision[i] * 100) + ' ' + str(recall[i] * 100) + ' ' + str(f1[i] * 100) + ' '
         with open(log_path, 'a') as f:
             f.write(log_text[:-1] + '\n\n')

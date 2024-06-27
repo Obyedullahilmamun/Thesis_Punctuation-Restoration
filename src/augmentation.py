@@ -1,7 +1,6 @@
 from config import TOKEN_IDX
 import numpy as np
 
-
 # probability of applying substitution operation on tokens selected for augmentation
 alpha_sub = 0.40
 # probability of applying delete operation on tokens selected for augmentation
@@ -11,7 +10,6 @@ tokenizer = None
 # substitution strategy: 'unk' -> replace with unknown tokens, 'rand' -> replace with random tokens from vocabulary
 sub_style = 'unk'
 
-
 def augment_none(x, y, y_mask, x_aug, y_aug, y_mask_aug, i, token_style):
     """
     apply no augmentation
@@ -19,7 +17,6 @@ def augment_none(x, y, y_mask, x_aug, y_aug, y_mask_aug, i, token_style):
     x_aug.append(x[i])
     y_aug.append(y[i])
     y_mask_aug.append(y_mask[i])
-
 
 def augment_substitute(x, y, y_mask, x_aug, y_aug, y_mask_aug, i, token_style):
     """
@@ -32,7 +29,6 @@ def augment_substitute(x, y, y_mask, x_aug, y_aug, y_mask_aug, i, token_style):
     y_aug.append(y[i])
     y_mask_aug.append(y_mask[i])
 
-
 def augment_insert(x, y, y_mask, x_aug, y_aug, y_mask_aug, i, token_style):
     """
     insert the unknown token before this token
@@ -44,13 +40,11 @@ def augment_insert(x, y, y_mask, x_aug, y_aug, y_mask_aug, i, token_style):
     y_aug.append(y[i])
     y_mask_aug.append(y_mask[i])
 
-
 def augment_delete(x, y, y_mask, x_aug, y_aug, y_mask_aug, i, token_style):
     """
     remove this token i..e, not add in augmented tokens
     """
     return
-
 
 def augment_all(x, y, y_mask, x_aug, y_aug, y_mask_aug, i, token_style):
     """
@@ -65,7 +59,6 @@ def augment_all(x, y, y_mask, x_aug, y_aug, y_mask_aug, i, token_style):
     else:
         augment_insert(x, y, y_mask, x_aug, y_aug, y_mask_aug, i, token_style)
 
-
 # supported augmentation techniques
 AUGMENTATIONS = {
     'none': augment_none,
@@ -74,3 +67,4 @@ AUGMENTATIONS = {
     'delete': augment_delete,
     'all': augment_all
 }
+

@@ -1,6 +1,5 @@
 import argparse
 
-
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Punctuation restoration')
     parser.add_argument('--name', default='punctuation-restore', type=str, help='name of run')

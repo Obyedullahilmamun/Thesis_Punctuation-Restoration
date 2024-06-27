@@ -29,11 +29,7 @@ TOKEN_IDX = {
 }
 
 # 'O' -> No punctuation
-# punctuation_dict = {'O': 0, 'COMMA': 1, 'PERIOD': 2, 'QUESTION': 3}
-# Added Exclamation 
 punctuation_dict = {'O': 0, 'COMMA': 1, 'PERIOD': 2, 'QUESTION': 3, 'EXCLAMATION': 4}
-
-
 
 # pretrained model name: (model class, model tokenizer, output dimension, token style)
 MODELS = {

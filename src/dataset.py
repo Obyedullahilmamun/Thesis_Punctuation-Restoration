@@ -6,7 +6,6 @@ import numpy as np
 
 def parse_data(file_path, tokenizer, sequence_len, token_style):
     """
-
     :param file_path: text file path that contains tokens and punctuations separated by tab in lines
     :param tokenizer: tokenizer that will be used to further tokenize word for BERT like models
     :param sequence_len: maximum length of each sequence
@@ -61,7 +60,6 @@ class Dataset(torch.utils.data.Dataset):
     def __init__(self, files, tokenizer, sequence_len, token_style, is_train=False, augment_rate=0.1,
                  augment_type='substitute'):
         """
-
         :param files: single file or list of text files containing tokens and punctuations separated by tab in lines
         :param tokenizer: tokenizer that will be used to further tokenize word for BERT like models
         :param sequence_len: length of each sequence
