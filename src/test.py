@@ -2,7 +2,6 @@ import os
 import torch
 from tqdm import tqdm
 import numpy as np
-
 import argparse
 from dataset import Dataset
 from model import DeepPunctuation, DeepPunctuationCRF
@@ -51,7 +50,7 @@ else:
     deep_punctuation = DeepPunctuation(args.pretrained_model, freeze_bert=False, lstm_dim=args.lstm_dim)
 deep_punctuation.to(device)
 
-def test(data_loader):
+def test(data_loader, test_name):
     num_iteration = 0
     deep_punctuation.eval()
     tp = np.zeros(1 + len(punctuation_dict), dtype=np.int)
@@ -100,7 +99,7 @@ def test(data_loader):
 def run():
     deep_punctuation.load_state_dict(torch.load(model_save_path))
     for i in range(len(test_loaders)):
-        precision, recall, f1, accuracy, cm = test(test_loaders[i])
+        precision, recall, f1, accuracy, cm = test(test_loaders[i], test_files[i])
         log = test_files[i] + '\n' + 'Precision: ' + str(precision) + '\n' + 'Recall: ' + str(recall) + '\n' + 'F1 score: ' + str(f1) + '\n' + 'Accuracy:' + str(accuracy) + '\n' + 'Confusion Matrix' + str(cm) + '\n'
         print(log)
         with open(log_path, 'a') as f:
