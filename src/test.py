@@ -98,12 +98,32 @@ def test(data_loader):
     return precision, recall, f1, correct / total, cm
 
 def run():
-    deep_punctuation.load_state_dict(torch.load(model_save_path))
+    # Load the state dictionary
+    state_dict = torch.load(model_save_path)
+    
+    # Get the current model's state dictionary
+    model_state_dict = deep_punctuation.state_dict()
+
+    # Filter out the keys that don't match
+    filtered_state_dict = {k: v for k, v in state_dict.items() if k in model_state_dict and v.size() == model_state_dict[k].size()}
+
+    # Load the filtered state dictionary
+    deep_punctuation.load_state_dict(filtered_state_dict, strict=False)
+
+    # Initialize the mismatched layers
+    for name, param in deep_punctuation.named_parameters():
+        if name not in filtered_state_dict:
+            if 'weight' in name:
+                torch.nn.init.xavier_normal_(param)
+            elif 'bias' in name:
+                torch.nn.init.zeros_(param)
+
     for i in range(len(test_loaders)):
         precision, recall, f1, accuracy, cm = test(test_loaders[i])
         log = test_files[i] + '\n' + 'Precision: ' + str(precision) + '\n' + 'Recall: ' + str(recall) + '\n' + 'F1 score: ' + str(f1) + '\n' + 'Accuracy:' + str(accuracy) + '\n' + 'Confusion Matrix' + str(cm) + '\n'
         print(log)
         with open(log_path, 'a') as f:
             f.write(log)
+
 
 run()
