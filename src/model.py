@@ -19,7 +19,7 @@ class DeepPunctuation(nn.Module):
         else:
             hidden_size = lstm_dim
         self.lstm = nn.LSTM(input_size=bert_dim, hidden_size=hidden_size, num_layers=1, bidirectional=True)
-        self.linear = nn.Linear(in_features=hidden_size*2, out_features=5)
+        self.linear = nn.Linear(in_features=hidden_size*2, out_features=4)
 
     def forward(self, x, attn_masks):
         if len(x.shape) == 1:

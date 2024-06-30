@@ -55,7 +55,7 @@ if args.use_crf:
     deep_punctuation = DeepPunctuationCRF(args.pretrained_model, freeze_bert=False, lstm_dim=args.lstm_dim)
 else:
     deep_punctuation = DeepPunctuation(args.pretrained_model, freeze_bert=False, lstm_dim=args.lstm_dim)
-deep_punctuation.to(device)
+    deep_punctuation.to(device)
 
 
 def test(data_loader):
@@ -114,14 +114,10 @@ def test(data_loader):
 
 def run():
     checkpoint = torch.load(model_save_path)
-    
-    # Print out the keys in the checkpoint to identify the correct key for state_dict
     print(checkpoint.keys())
     
-    # Assuming the state_dict is directly under the top level of checkpoint
     model_state_dict = checkpoint  # Modify this if state_dict is nested
     
-    # Adjust the state_dict to match current model's architecture
     if 'linear.weight' in model_state_dict:
         # Adjust the shape of the weight and bias parameters based on your current model
         # For example, if the new model has 5 classes instead of 4, adjust the shapes accordingly
