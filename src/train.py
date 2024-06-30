@@ -12,17 +12,17 @@ from model import DeepPunctuation, DeepPunctuationCRF
 from config import *
 import augmentation
 
-torch.multiprocessing.set_sharing_strategy('file_system')   # https://github.com/pytorch/pytorch/issues/11201
+torch.multiprocessing.set_sharing_strategy('file_system')  # https://github.com/pytorch/pytorch/issues/11201
 
 args = parse_arguments()
 
-# for reproducibility
+# For reproducibility
 torch.manual_seed(args.seed)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 np.random.seed(args.seed)
 
-# tokenizer
+# Tokenizer
 tokenizer = MODELS[args.pretrained_model][1].from_pretrained(args.pretrained_model)
 augmentation.tokenizer = tokenizer
 augmentation.sub_style = args.sub_style
@@ -46,23 +46,6 @@ if args.language == 'bangla':
     test_set_asr = Dataset(os.path.join(args.data_path, 'bn/test_asr'), tokenizer=tokenizer, sequence_len=sequence_len,
                            token_style=token_style, is_train=False)
     test_set = [val_set, test_set_news, test_set_ref, test_set_asr]
-elif args.language == 'english-bangla':
-    train_set = Dataset([os.path.join(args.data_path, 'en/train2012'), os.path.join(args.data_path, 'bn/train_bn')],
-                        tokenizer=tokenizer, sequence_len=sequence_len, token_style=token_style, is_train=True,
-                        augment_rate=ar, augment_type=aug_type)
-    val_set = Dataset([os.path.join(args.data_path, 'en/dev2012'), os.path.join(args.data_path, 'bn/dev_bn')],
-                      tokenizer=tokenizer, sequence_len=sequence_len, token_style=token_style, is_train=False)
-    test_set_ref = Dataset(os.path.join(args.data_path, 'en/test2011'), tokenizer=tokenizer, sequence_len=sequence_len,
-                           token_style=token_style, is_train=False)
-    test_set_asr = Dataset(os.path.join(args.data_path, 'en/test2011asr'), tokenizer=tokenizer, sequence_len=sequence_len,
-                           token_style=token_style, is_train=False)
-    test_set_news = Dataset(os.path.join(args.data_path, 'bn/test_news'), tokenizer=tokenizer, sequence_len=sequence_len,
-                            token_style=token_style, is_train=False)
-    test_bn_ref = Dataset(os.path.join(args.data_path, 'bn/test_ref'), tokenizer=tokenizer, sequence_len=sequence_len,
-                          token_style=token_style, is_train=False)
-    test_bn_asr = Dataset(os.path.join(args.data_path, 'bn/test_asr'), tokenizer=tokenizer, sequence_len=sequence_len,
-                          token_style=token_style, is_train=False)
-    test_set = [val_set, test_set_ref, test_set_asr, test_set_news, test_bn_ref, test_bn_asr]
 else:
     raise ValueError('Incorrect language argument for Dataset')
 
@@ -76,11 +59,10 @@ train_loader = torch.utils.data.DataLoader(train_set, **data_loader_params)
 val_loader = torch.utils.data.DataLoader(val_set, **data_loader_params)
 test_loaders = [torch.utils.data.DataLoader(x, **data_loader_params) for x in test_set]
 
-# logs
+# Logs
 os.makedirs(args.save_path, exist_ok=True)
 model_save_path = os.path.join(args.save_path, 'weights.pt')
 log_path = os.path.join(args.save_path, args.name + '_logs.txt')
-
 
 # Model
 device = torch.device('cuda' if (args.cuda and torch.cuda.is_available()) else 'cpu')
@@ -91,7 +73,6 @@ else:
 deep_punctuation.to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(deep_punctuation.parameters(), lr=args.lr, weight_decay=args.decay)
-
 
 def validate(data_loader):
     """
@@ -122,8 +103,7 @@ def validate(data_loader):
             y_mask = y_mask.view(-1)
             correct += torch.sum(y_mask * (y_predict == y).long()).item()
             total += torch.sum(y_mask).item()
-    return correct/total, val_loss/num_iteration
-
+    return correct / total, val_loss / num_iteration
 
 def test(data_loader):
     """
@@ -132,9 +112,9 @@ def test(data_loader):
     num_iteration = 0
     deep_punctuation.eval()
     # +1 for overall result
-    tp = np.zeros(1+len(punctuation_dict), dtype=np.int)
-    fp = np.zeros(1+len(punctuation_dict), dtype=np.int)
-    fn = np.zeros(1+len(punctuation_dict), dtype=np.int)
+    tp = np.zeros(1 + len(punctuation_dict), dtype=np.int)
+    fp = np.zeros(1 + len(punctuation_dict), dtype(np.int))
+    fn = np.zeros(1 + len(punctuation_dict), dtype=np.int)
     cm = np.zeros((len(punctuation_dict), len(punctuation_dict)), dtype=np.int)
     correct = 0
     total = 0
@@ -157,8 +137,8 @@ def test(data_loader):
             total += torch.sum(y_mask).item()
             for i in range(y.shape[0]):
                 if y_mask[i] == 0:
-                    # we can ignore this because we know there won't be any punctuation in this position
-                    # since we created this position due to padding or sub-word tokenization
+                    # We can ignore this because we know there won't be any punctuation in this position
+                    # Since we created this position due to padding or sub-word tokenization
                     continue
                 cor = y[i]
                 prd = y_predict[i]
@@ -168,20 +148,19 @@ def test(data_loader):
                     fn[cor] += 1
                     fp[prd] += 1
                 cm[cor][prd] += 1
-    # ignore first index which is for no punctuation
+    # Ignore first index which is for no punctuation
     tp[-1] = np.sum(tp[1:])
     fp[-1] = np.sum(fp[1:])
     fn[-1] = np.sum(fn[1:])
-    precision = tp/(tp+fp)
-    recall = tp/(tp+fn)
+    precision = tp / (tp + fp)
+    recall = tp / (tp + fn)
     f1 = 2 * precision * recall / (precision + recall)
 
-    return precision, recall, f1, correct/total, cm
-
+    return precision, recall, f1, correct / total, cm
 
 def train():
     with open(log_path, 'a') as f:
-        f.write(str(args)+'\n')
+        f.write(str(args) + '\n')
     best_val_acc = 0
     for epoch in range(args.epoch):
         train_loss = 0.0
@@ -199,6 +178,11 @@ def train():
                 y_predict = deep_punctuation(x, att)
                 y_predict = y_predict.view(-1, y_predict.shape[2])
                 y = y.view(-1)
+
+                # Debugging: Check the range of y values
+                if torch.any(y >= y_predict.shape[1]) or torch.any(y < 0):
+                    print(f"Found out-of-range values in y: {y[y >= y_predict.shape[1]]}, {y[y < 0]}")
+
                 loss = criterion(y_predict, y)
                 y_predict = torch.argmax(y_predict, dim=1).view(-1)
 
@@ -246,7 +230,6 @@ def train():
             log_text += str(precision[i] * 100) + ' ' + str(recall[i] * 100) + ' ' + str(f1[i] * 100) + ' '
         with open(log_path, 'a') as f:
             f.write(log_text[:-1] + '\n\n')
-
 
 if __name__ == '__main__':
     train()
