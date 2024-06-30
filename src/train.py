@@ -12,7 +12,7 @@ from model import DeepPunctuation, DeepPunctuationCRF
 from config import *
 import augmentation
 
-torch.multiprocessing.set_sharing_strategy('file_system')  # https://github.com/pytorch/pytorch/issues/11201
+torch.multiprocessing.set_sharing_strategy('file_system')   # https://github.com/pytorch/pytorch/issues/11201
 
 args = parse_arguments()
 
@@ -34,17 +34,7 @@ sequence_len = args.sequence_length
 aug_type = args.augment_type
 
 # Datasets
-if args.language == 'english':
-    train_set = Dataset(os.path.join(args.data_path, 'en/train2012'), tokenizer=tokenizer, sequence_len=sequence_len,
-                        token_style=token_style, is_train=True, augment_rate=ar, augment_type=aug_type)
-    val_set = Dataset(os.path.join(args.data_path, 'en/dev2012'), tokenizer=tokenizer, sequence_len=sequence_len,
-                      token_style=token_style, is_train=False)
-    test_set_ref = Dataset(os.path.join(args.data_path, 'en/test2011'), tokenizer=tokenizer, sequence_len=sequence_len,
-                           token_style=token_style, is_train=False)
-    test_set_asr = Dataset(os.path.join(args.data_path, 'en/test2011asr'), tokenizer=tokenizer, sequence_len=sequence_len,
-                           token_style=token_style, is_train=False)
-    test_set = [val_set, test_set_ref, test_set_asr]
-elif args.language == 'bangla':
+if args.language == 'bangla':
     train_set = Dataset(os.path.join(args.data_path, 'bn/train'), tokenizer=tokenizer, sequence_len=sequence_len,
                         token_style=token_style, is_train=True, augment_rate=ar, augment_type=aug_type)
     val_set = Dataset(os.path.join(args.data_path, 'bn/dev'), tokenizer=tokenizer, sequence_len=sequence_len,
@@ -91,6 +81,7 @@ os.makedirs(args.save_path, exist_ok=True)
 model_save_path = os.path.join(args.save_path, 'weights.pt')
 log_path = os.path.join(args.save_path, args.name + '_logs.txt')
 
+
 # Model
 device = torch.device('cuda' if (args.cuda and torch.cuda.is_available()) else 'cpu')
 if args.use_crf:
@@ -131,7 +122,7 @@ def validate(data_loader):
             y_mask = y_mask.view(-1)
             correct += torch.sum(y_mask * (y_predict == y).long()).item()
             total += torch.sum(y_mask).item()
-    return correct / total, val_loss / num_iteration
+    return correct/total, val_loss/num_iteration
 
 
 def test(data_loader):
@@ -141,9 +132,9 @@ def test(data_loader):
     num_iteration = 0
     deep_punctuation.eval()
     # +1 for overall result
-    tp = np.zeros(1 + len(punctuation_dict), dtype=np.int)
-    fp = np.zeros(1 + len(punctuation_dict), dtype=np.int)
-    fn = np.zeros(1 + len(punctuation_dict), dtype=np.int)
+    tp = np.zeros(1+len(punctuation_dict), dtype=np.int)
+    fp = np.zeros(1+len(punctuation_dict), dtype=np.int)
+    fn = np.zeros(1+len(punctuation_dict), dtype=np.int)
     cm = np.zeros((len(punctuation_dict), len(punctuation_dict)), dtype=np.int)
     correct = 0
     total = 0
@@ -181,16 +172,16 @@ def test(data_loader):
     tp[-1] = np.sum(tp[1:])
     fp[-1] = np.sum(fp[1:])
     fn[-1] = np.sum(fn[1:])
-    precision = tp / (tp + fp)
-    recall = tp / (tp + fn)
+    precision = tp/(tp+fp)
+    recall = tp/(tp+fn)
     f1 = 2 * precision * recall / (precision + recall)
 
-    return precision, recall, f1, correct / total, cm
+    return precision, recall, f1, correct/total, cm
 
 
 def train():
     with open(log_path, 'a') as f:
-        f.write(str(args) + '\n')
+        f.write(str(args)+'\n')
     best_val_acc = 0
     for epoch in range(args.epoch):
         train_loss = 0.0
@@ -203,8 +194,6 @@ def train():
             y_mask = y_mask.view(-1)
             if args.use_crf:
                 loss = deep_punctuation.log_likelihood(x, att, y)
-                # y_predict = deep_punctuation(x, att, y)
-                # y_predict = y_predict.view(-1)
                 y = y.view(-1)
             else:
                 y_predict = deep_punctuation(x, att)
@@ -253,7 +242,7 @@ def train():
         with open(log_path, 'a') as f:
             f.write(log)
         log_text = ''
-        for i in range(1, len(punctuation_dict)):  # Update the loop range
+        for i in range(1, 5):
             log_text += str(precision[i] * 100) + ' ' + str(recall[i] * 100) + ' ' + str(f1[i] * 100) + ' '
         with open(log_path, 'a') as f:
             f.write(log_text[:-1] + '\n\n')
