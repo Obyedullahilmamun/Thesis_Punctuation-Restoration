@@ -113,7 +113,19 @@ def test(data_loader):
 
 
 def run():
-    deep_punctuation.load_state_dict(torch.load(model_save_path))
+    checkpoint = torch.load(model_save_path)
+    model_state_dict = checkpoint['model_state_dict']
+    
+    # Check and modify the state_dict if necessary to match current model's shape
+    if 'linear.weight' in model_state_dict:
+        # Adjust the shape of the weight and bias parameters based on your current model
+        # For example, if the new model has 5 classes instead of 4, adjust the shapes accordingly
+        model_state_dict['linear.weight'] = model_state_dict['linear.weight'][:5, :]
+        model_state_dict['linear.bias'] = model_state_dict['linear.bias'][:5]
+    
+    # Load modified state_dict into model
+    deep_punctuation.load_state_dict(model_state_dict, strict=False)
+    
     for i in range(len(test_loaders)):
         precision, recall, f1, accuracy, cm = test(test_loaders[i])
         log = test_files[i] + '\n' + 'Precision: ' + str(precision) + '\n' + 'Recall: ' + str(recall) + '\n' + \
@@ -121,6 +133,5 @@ def run():
         print(log)
         with open(log_path, 'a') as f:
             f.write(log)
-
 
 run()
