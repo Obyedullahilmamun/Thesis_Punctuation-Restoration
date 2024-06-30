@@ -113,7 +113,7 @@ def test(data_loader):
     deep_punctuation.eval()
     # +1 for overall result
     tp = np.zeros(1 + len(punctuation_dict), dtype=np.int)
-    fp = np.zeros(1 + len(punctuation_dict), dtype(np.int))
+    fp = np.zeros(1 + len(punctuation_dict), dtype=np.int)
     fn = np.zeros(1 + len(punctuation_dict), dtype=np.int)
     cm = np.zeros((len(punctuation_dict), len(punctuation_dict)), dtype=np.int)
     correct = 0
@@ -181,28 +181,19 @@ def train():
 
                 # Debugging: Check the range of y values
                 if torch.any(y >= y_predict.shape[1]) or torch.any(y < 0):
-                    print(f"Found out-of-range values in y: {y[y >= y_predict.shape[1]]}, {y[y < 0]}")
+                    print(f"Out of range values found in y: {y}")
 
                 loss = criterion(y_predict, y)
                 y_predict = torch.argmax(y_predict, dim=1).view(-1)
-
+                y_mask = y_mask.view(-1)
                 correct += torch.sum(y_mask * (y_predict == y).long()).item()
-
+                total += torch.sum(y_mask).item()
             optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
             train_loss += loss.item()
             train_iteration += 1
-            loss.backward()
-
-            if args.gradient_clip > 0:
-                torch.nn.utils.clip_grad_norm_(deep_punctuation.parameters(), args.gradient_clip)
-            optimizer.step()
-
-            y_mask = y_mask.view(-1)
-
-            total += torch.sum(y_mask).item()
-
-        train_loss /= train_iteration
-        log = 'epoch: {}, Train loss: {}, Train accuracy: {}'.format(epoch, train_loss, correct / total)
+        log = 'epoch: {}, Train loss: {}, Train accuracy: {}'.format(epoch, train_loss / train_iteration, correct / total)
         with open(log_path, 'a') as f:
             f.write(log + '\n')
         print(log)
