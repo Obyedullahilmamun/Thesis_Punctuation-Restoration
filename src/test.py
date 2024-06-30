@@ -11,12 +11,12 @@ from config import *
 
 parser = argparse.ArgumentParser(description='Punctuation restoration test')
 parser.add_argument('--cuda', default=True, type=lambda x: (str(x).lower() == 'true'), help='use cuda if available')
-parser.add_argument('--pretrained-model', default='roberta-large', type=str, help='pretrained language model')
+parser.add_argument('--pretrained-model', default='xlm-roberta-large', type=str, help='pretrained language model')
 parser.add_argument('--lstm-dim', default=-1, type=int,
                     help='hidden dimension in LSTM layer, if -1 is set equal to hidden dimension in language model')
 parser.add_argument('--use-crf', default=False, type=lambda x: (str(x).lower() == 'true'),
                     help='whether to use CRF layer or not')
-parser.add_argument('--data-path', default='data/test', type=str, help='path to test datasets')
+parser.add_argument('--data-path', default='data/test_bn', type=str, help='path to test datasets for Bangla')
 parser.add_argument('--weight-path', default='out/weights.pt', type=str, help='model weight path')
 parser.add_argument('--sequence-length', default=256, type=int,
                     help='sequence length to use when preparing dataset (default 256)')
