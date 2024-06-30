@@ -45,6 +45,9 @@ data_loader_params = {
 
 test_loaders = [torch.utils.data.DataLoader(x, **data_loader_params) for x in test_set]
 
+# Ensure the directory exists or create it
+os.makedirs(args.save_path, exist_ok=True)
+
 # logs
 model_save_path = args.weight_path
 log_path = os.path.join(args.save_path, 'logs_test.txt')
