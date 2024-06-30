@@ -114,7 +114,12 @@ def test(data_loader):
 
 def run():
     checkpoint = torch.load(model_save_path)
-    model_state_dict = checkpoint['model_state_dict']
+    
+    # Adjust according to the actual key name in checkpoint
+    if 'state_dict' in checkpoint:
+        model_state_dict = checkpoint['state_dict']
+    else:
+        model_state_dict = checkpoint  # Use the checkpoint directly if the key is different
     
     # Check and modify the state_dict if necessary to match current model's shape
     if 'linear.weight' in model_state_dict:
@@ -135,3 +140,4 @@ def run():
             f.write(log)
 
 run()
+
